@@ -1,4 +1,4 @@
-organization := "org.frank.kafka.storage"
+organization := "org.ditank.kafka.storage"
 
 name := "kafka-storage"
 
