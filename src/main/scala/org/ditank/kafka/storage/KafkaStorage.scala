@@ -4,7 +4,7 @@ import org.apache.avro.specific.SpecificRecord
 
 import scala.concurrent.Future
 
-trait Storage[K <: SpecificRecord, V <: SpecificRecord] {
+trait KafkaStorage[K <: SpecificRecord, V <: SpecificRecord] {
 
   def insert(record: (K, V)): Future[Unit]
 
