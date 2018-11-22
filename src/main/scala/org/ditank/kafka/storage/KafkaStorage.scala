@@ -3,6 +3,7 @@ package org.ditank.kafka.storage
 import org.apache.avro.specific.SpecificRecord
 
 import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 trait KafkaStorage[K <: SpecificRecord, V <: SpecificRecord] {
 
