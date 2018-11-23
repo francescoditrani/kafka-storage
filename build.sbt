@@ -2,6 +2,7 @@ organization := "org.ditank.kafka.storage"
 
 name := "kafka-storage"
 
+version := "0.0.1"
 scalaVersion := "2.12.7"
 
 resolvers += "confluent" at "http://packages.confluent.io/maven/"
@@ -26,3 +27,28 @@ libraryDependencies ++= Seq(
 sourceGenerators in Test += (avroScalaGenerateSpecific in Test).taskValue
 sourceGenerators in Compile += (avroScalaGenerateSpecific in Compile).taskValue
 parallelExecution in Test := false
+
+organization := "com.github.francescoditrani"
+homepage := Some(url("https://github.com/francescoditrani/kafka-storage"))
+scmInfo := Some(ScmInfo(url("https://github.com/francescoditrani/kafka-storage"), "git@github.com:francescoditrani/kafka-storage.git"))
+developers := List(
+  Developer("francescoditrani",
+    "Francesco Ditrani",
+    "f.ditrani@gmail.com",
+    url("https://github.com/francescoditrani")),
+  Developer("ankushkhanna",
+    "Ankush Khanna",
+    "ankushkhanna22@gmail.com",
+    url("https://github.com/AnkushKhanna"))
+)
+
+licenses += ("Apache-2.0", url("http://www.apache.org/licenses/LICENSE-2.0"))
+publishMavenStyle := true
+
+// Add sonatype repository settings
+publishTo := Some(
+  if (isSnapshot.value)
+    Opts.resolver.sonatypeSnapshots
+  else
+    Opts.resolver.sonatypeStaging
+)
