@@ -76,8 +76,8 @@ class GKStreamsStorageTest extends FlatSpec with BeforeAndAfterEach with Mockito
 
     gKStreamsStorage.compareUpdate(key, updateWith)
     verify(kafkaProducer).send(producerRecordCaptor.capture())
-    assert(producerRecordCaptor.getValue().key() === key)
-    assert(producerRecordCaptor.getValue().value() === newValue)
+    assert(producerRecordCaptor.getValue.key() === key)
+    assert(producerRecordCaptor.getValue.value() === newValue)
   }
 
 
