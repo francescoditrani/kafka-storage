@@ -1,4 +1,4 @@
-package org.ditank.kafka.storage
+package org.ditank.kafka.storage.builder
 
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde
 import org.apache.avro.specific.SpecificRecord
@@ -6,7 +6,8 @@ import org.apache.kafka.streams.kstream.Materialized
 import org.apache.kafka.streams.scala.ImplicitConversions._
 import org.apache.kafka.streams.scala.StreamsBuilder
 import org.apache.kafka.streams.state.Stores
-import org.ditank.kafka.storage.SerdeHelper._
+import org.ditank.kafka.storage.helper.SerdeHelper._
+import org.ditank.kafka.storage.configuration.KafkaConfiguration
 
 object RichKStreamsBuilder {
 

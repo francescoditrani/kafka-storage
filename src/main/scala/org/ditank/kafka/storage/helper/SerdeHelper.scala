@@ -1,4 +1,4 @@
-package org.ditank.kafka.storage
+package org.ditank.kafka.storage.helper
 
 import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde

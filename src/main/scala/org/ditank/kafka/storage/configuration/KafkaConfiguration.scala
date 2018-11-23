@@ -1,4 +1,4 @@
-package org.ditank.kafka.storage
+package org.ditank.kafka.storage.configuration
 
 final case class StreamsConfiguration(applicationId: String,
                                       replicationFactor: Int,
