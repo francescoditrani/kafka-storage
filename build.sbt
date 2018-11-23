@@ -18,7 +18,7 @@ libraryDependencies ++= Seq(
   "com.typesafe.scala-logging" %% "scala-logging" % "3.9.0",
   "com.github.pureconfig" %% "pureconfig" % "0.9.1",
 
-    //test
+  //test
   "org.scalatest" %% "scalatest" % "3.0.5" % "test",
   "org.mockito" % "mockito-core" % "2.23.0" % "test"
 )
