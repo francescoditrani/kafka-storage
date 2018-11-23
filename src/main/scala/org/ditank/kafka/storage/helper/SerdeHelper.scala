@@ -12,5 +12,6 @@ object SerdeHelper {
     properties.put(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrl)
     serde.configure(properties, isKey)
     serde
+
   }
 }
