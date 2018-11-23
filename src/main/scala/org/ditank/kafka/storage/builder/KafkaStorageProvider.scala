@@ -9,16 +9,17 @@ import org.apache.kafka.streams.scala.StreamsBuilder
 import org.apache.kafka.streams.{KafkaStreams, StreamsConfig}
 import RichKStreamsBuilder.StorageKStreamsBuilder
 import org.ditank.kafka.storage.KafkaStorage
-import org.ditank.kafka.storage.configuration.KafkaConfiguration
+import org.ditank.kafka.storage.configuration.KafkaStorageConfiguration
 
 class KafkaStorageProvider[K <: SpecificRecord, V <: SpecificRecord]() {
 
-  def create(kafkaConfiguration: KafkaConfiguration): KafkaStorage[K, V] = {
-    lazy val streamsProps = streamsProperties(kafkaConfiguration)
+  def create(kafkaConf: KafkaStorageConfiguration): KafkaStorage[K, V] = {
+
+    lazy val streamsProps = streamsProperties(kafkaConf)
 
     val builder = new StreamsBuilder()
 
-    val storageBuilder = builder.storageBuilder(kafkaConfiguration)
+    val storageBuilder = builder.storageBuilder(kafkaConf)
 
     val topology = builder.build()
 
@@ -26,15 +27,14 @@ class KafkaStorageProvider[K <: SpecificRecord, V <: SpecificRecord]() {
 
     streams.start()
 
-    storageBuilder.build(streams, kafkaConfiguration)
+    storageBuilder.build(streams, kafkaConf)
   }
 
-  private def streamsProperties(kafkaConfig: KafkaConfiguration) = {
+  private def streamsProperties(kafkaConf: KafkaStorageConfiguration) = {
     val p = new Properties()
-    p.put(StreamsConfig.APPLICATION_ID_CONFIG, kafkaConfig.streams.applicationId)
-    p.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaConfig.bootstrapServer)
-    p.put(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, kafkaConfig.schemaRegistryUrl)
-    p.put(StreamsConfig.REPLICATION_FACTOR_CONFIG, kafkaConfig.streams.replicationFactor.toString)
+    p.put(StreamsConfig.APPLICATION_ID_CONFIG, kafkaConf.storeTopic)
+    p.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaConf.bootstrapServer)
+    p.put(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, kafkaConf.schemaRegistryUrl)
     p.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
     p
   }

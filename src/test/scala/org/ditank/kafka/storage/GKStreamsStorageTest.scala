@@ -1,6 +1,5 @@
 package org.ditank.kafka.storage
 
-import kafka.controller.Callbacks
 import org.apache.kafka.clients.producer.{Callback, KafkaProducer, ProducerRecord}
 import org.apache.kafka.streams.KafkaStreams
 import org.apache.kafka.streams.state.{QueryableStoreType, ReadOnlyKeyValueStore}
