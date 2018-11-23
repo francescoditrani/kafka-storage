@@ -1,0 +1,26 @@
+package org.ditank.kafka.storage
+
+import org.apache.avro.specific.SpecificRecord
+import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord, RecordMetadata}
+import org.apache.kafka.streams.KafkaStreams
+import org.apache.kafka.streams.state.{QueryableStoreTypes, ReadOnlyKeyValueStore}
+import org.ditank.kafka.storage.RichKafkaProducer._
+
+import scala.concurrent.Future
+
+class  GKStreamsStorage[K <: SpecificRecord, V <: SpecificRecord](streams: KafkaStreams,
+                                                                  kafkaProducer: KafkaProducer[K, V],
+                                                                  storeName: String) extends KafkaStorage[K, V] {
+
+  private val globalTable: ReadOnlyKeyValueStore[K, V] = streams.store(storeName,  QueryableStoreTypes.keyValueStore[K, V])
+
+<<<<<<< HEAD
+  def insert(record: (K, V)): Future[RecordMetadata] = kafkaProducer.sendAsync(new ProducerRecord[K, V](inputTopic, record._1, record._2))
+=======
+  def insert(record: (K, V)): java.util.concurrent.Future[RecordMetadata] = kafkaProducer.send(new ProducerRecord[K, V](storeName, record._1, record._2))
+>>>>>>> Adding test for Kafka Storeage.
+
+  def get(key: K): Option[V] = Option(globalTable.get(key))
+
+
+}
