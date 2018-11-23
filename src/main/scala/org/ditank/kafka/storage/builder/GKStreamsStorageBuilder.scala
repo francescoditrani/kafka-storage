@@ -1,4 +1,4 @@
-package org.ditank.kafka.storage
+package org.ditank.kafka.storage.builder
 
 import java.util.Properties
 
@@ -7,6 +7,8 @@ import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerializer
 import org.apache.avro.specific.SpecificRecord
 import org.apache.kafka.clients.producer.{KafkaProducer, ProducerConfig}
 import org.apache.kafka.streams.KafkaStreams
+import org.ditank.kafka.storage.configuration.KafkaConfiguration
+import org.ditank.kafka.storage.{GKStreamsStorage, KafkaStorage}
 
 class GKStreamsStorageBuilder() {
 

@@ -1,4 +1,4 @@
-package org.ditank.kafka.storage
+package org.ditank.kafka.storage.builder
 
 import java.util.Properties
 
@@ -7,7 +7,9 @@ import org.apache.avro.specific.SpecificRecord
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.streams.scala.StreamsBuilder
 import org.apache.kafka.streams.{KafkaStreams, StreamsConfig}
-import org.ditank.kafka.storage.RichKStreamsBuilder.StorageKStreamsBuilder
+import RichKStreamsBuilder.StorageKStreamsBuilder
+import org.ditank.kafka.storage.KafkaStorage
+import org.ditank.kafka.storage.configuration.KafkaConfiguration
 
 class KafkaStorageProvider[K <: SpecificRecord, V <: SpecificRecord]() {
 
