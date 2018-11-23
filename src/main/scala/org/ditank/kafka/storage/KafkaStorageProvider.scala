@@ -26,7 +26,7 @@ class KafkaStorageProvider[K <: SpecificRecord, V <: SpecificRecord]() {
 
     streams.start()
 
-    storageBuilder.build(streams)
+    storageBuilder.build(streams, kafkaConfiguration)
   }
 
   private def streamsProperties(kafkaConfig: KafkaConfiguration) = {
