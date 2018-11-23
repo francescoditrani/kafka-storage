@@ -1,14 +1,19 @@
 package org.ditank.kafka.storage
 
-import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord}
+import kafka.controller.Callbacks
+import org.apache.kafka.clients.producer.{Callback, KafkaProducer, ProducerRecord}
 import org.apache.kafka.streams.KafkaStreams
 import org.apache.kafka.streams.state.{QueryableStoreType, ReadOnlyKeyValueStore}
 import org.ditank.kafka.storage.test.{TestKey, TestValue}
-import org.mockito.{ArgumentCaptor, ArgumentMatchers, Mockito}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, refEq}
 import org.mockito.Mockito.{never, verify, when}
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{BeforeAndAfterEach, FlatSpec}
+
+import scala.concurrent.Await
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration._
 
 class GKStreamsStorageTest extends FlatSpec with BeforeAndAfterEach with MockitoSugar {
 
@@ -51,18 +56,18 @@ class GKStreamsStorageTest extends FlatSpec with BeforeAndAfterEach with Mockito
 
     gKStreamsStorage.insert((key, value))
 
-    verify(kafkaProducer).send(producerRecordCaptor.capture())
+    verify(kafkaProducer).send(producerRecordCaptor.capture(), any[Callback])
     assert(producerRecordCaptor.getValue.key() === key)
     assert(producerRecordCaptor.getValue.value() === value)
   }
 
   "CompareUpdate" should "not call send and return null, if updateWith return None" in {
     val key = TestKey("test-uuid")
-    val updateWith: TestValue => Option[TestValue] = _ => None
+    val updateWith: Option[TestValue] => Option[TestValue] = _ => None
     val future = gKStreamsStorage.compareUpdate(key, updateWith)
 
-    assert(future.get() === null)
-    verify(kafkaProducer, never()).send(any[ProducerRecord[TestKey, TestValue]])
+    assert(Await.result(future, 5.seconds) === None)
+    verify(kafkaProducer, never()).send(any[ProducerRecord[TestKey, TestValue]], any[Callback])
   }
 
   it should "call send send and return the metadata if updateWith return Value" in {
@@ -72,10 +77,10 @@ class GKStreamsStorageTest extends FlatSpec with BeforeAndAfterEach with Mockito
 
     when(globalTable.get(key)).thenReturn(value)
 
-    val updateWith: TestValue => Option[TestValue] = _ => Some(newValue)
+    val updateWith: Option[TestValue] => Option[TestValue] = _ => Some(newValue)
 
     gKStreamsStorage.compareUpdate(key, updateWith)
-    verify(kafkaProducer).send(producerRecordCaptor.capture())
+    verify(kafkaProducer).send(producerRecordCaptor.capture(), any[Callback])
     assert(producerRecordCaptor.getValue.key() === key)
     assert(producerRecordCaptor.getValue.value() === newValue)
   }
