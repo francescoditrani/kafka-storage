@@ -10,11 +10,11 @@ import scala.concurrent.Future
 
 class  GKStreamsStorage[K <: SpecificRecord, V <: SpecificRecord](streams: KafkaStreams,
                                                                   kafkaProducer: KafkaProducer[K, V],
-                                                                  inputTopic: String) extends KafkaStorage[K, V] {
+                                                                  storeName: String) extends KafkaStorage[K, V] {
 
-  private val globalTable: ReadOnlyKeyValueStore[K, V] = streams.store(inputTopic,  QueryableStoreTypes.keyValueStore[K, V])
+  private val globalTable: ReadOnlyKeyValueStore[K, V] = streams.store(storeName,  QueryableStoreTypes.keyValueStore[K, V])
 
-  def insert(record: (K, V)): Future[RecordMetadata] = kafkaProducer.sendAsync(new ProducerRecord[K, V](inputTopic, record._1, record._2))
+  def insert(record: (K, V)): Future[RecordMetadata] = kafkaProducer.sendAsync(new ProducerRecord[K, V](storeName, record._1, record._2))
 
   def get(key: K): Option[V] = Option(globalTable.get(key))
 
