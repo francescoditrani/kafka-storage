@@ -1,0 +1,15 @@
+{
+  "namespace" : "org.ditank.kafka.storage.test",
+  "name" : "TestValue",
+  "type" : "record",
+  "fields" : [
+      {
+        "name" : "name",
+        "type" : "string"
+      },
+      {
+        "name" : "run",
+        "type" : "int"
+      }
+   ]
+}
