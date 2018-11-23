@@ -4,7 +4,7 @@ import org.apache.avro.specific.SpecificRecord
 import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord, RecordMetadata}
 import org.apache.kafka.streams.KafkaStreams
 import org.apache.kafka.streams.state.{QueryableStoreTypes, ReadOnlyKeyValueStore}
-import RichKafkaProducer._
+import org.ditank.kafka.storage.RichKafkaProducer._
 
 import scala.concurrent.Future
 
