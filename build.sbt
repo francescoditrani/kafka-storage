@@ -23,6 +23,6 @@ libraryDependencies ++= Seq(
   "org.mockito" % "mockito-core" % "2.23.0" % "test"
 )
 
-
-
+sourceGenerators in Test += (avroScalaGenerateSpecific in Test).taskValue
+sourceGenerators in Compile += (avroScalaGenerateSpecific in Compile).taskValue
 parallelExecution in Test := false

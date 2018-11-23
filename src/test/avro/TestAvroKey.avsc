@@ -1,0 +1,11 @@
+{
+  "namespace" : "org.ditank.kafka.storage.test",
+  "name" : "TestKey",
+  "type" : "record",
+  "fields" : [
+      {
+        "name" : "uuid",
+        "type" : "string"
+      }
+   ]
+}
