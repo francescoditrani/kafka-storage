@@ -5,11 +5,9 @@ import java.util.Properties
 import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig
 import org.apache.avro.specific.SpecificRecord
 import org.apache.kafka.clients.consumer.ConsumerConfig
-import org.apache.kafka.streams.kstream.Materialized
 import org.apache.kafka.streams.scala.StreamsBuilder
-import org.apache.kafka.streams.state.Stores
-import org.apache.kafka.streams.{KafkaStreams, StreamsConfig, Topology}
-import RichKStreamsBuilder.StorageKStreamsBuilder
+import org.apache.kafka.streams.{KafkaStreams, StreamsConfig}
+import org.ditank.kafka.storage.RichKStreamsBuilder.StorageKStreamsBuilder
 
 class KafkaStorageProvider[K <: SpecificRecord, V <: SpecificRecord]() {
 
