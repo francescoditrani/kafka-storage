@@ -5,6 +5,7 @@ import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde
 import org.apache.avro.specific.SpecificRecord
 
 object SerdeHelper {
+
   def createSerde[T <: SpecificRecord](isKey: Boolean, schemaRegistryUrl: String): SpecificAvroSerde[T] = {
     val serde = new SpecificAvroSerde[T]()
 
@@ -13,4 +14,5 @@ object SerdeHelper {
     serde.configure(properties, isKey)
     serde
   }
+
 }

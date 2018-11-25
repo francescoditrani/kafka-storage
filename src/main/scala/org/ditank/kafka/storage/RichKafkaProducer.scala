@@ -1,9 +1,7 @@
 package org.ditank.kafka.storage
 
 import org.apache.kafka.clients.producer.{Callback, KafkaProducer, ProducerRecord, RecordMetadata}
-
 import scala.concurrent.{Future, Promise}
-
 
 object RichKafkaProducer {
 

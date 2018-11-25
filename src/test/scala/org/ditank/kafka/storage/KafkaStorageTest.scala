@@ -14,9 +14,9 @@ import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 
-class GKStreamsStorageTest extends FlatSpec with BeforeAndAfterEach with MockitoSugar {
+class KafkaStorageTest extends FlatSpec with BeforeAndAfterEach with MockitoSugar {
 
-  var gKStreamsStorage: GKStreamsStorage[TestKey, TestValue] = _
+  var gKStreamsStorage: KafkaStorage[TestKey, TestValue] = _
   var mockStreams: KafkaStreams = _
   var kafkaProducer: KafkaProducer[TestKey, TestValue] = _
   val storeName = "input-store-name"
@@ -32,7 +32,7 @@ class GKStreamsStorageTest extends FlatSpec with BeforeAndAfterEach with Mockito
       .store[ReadOnlyKeyValueStore[TestKey, TestValue]](refEq(storeName), any[QueryableStoreType[ReadOnlyKeyValueStore[TestKey, TestValue]]])
     ).thenReturn(globalTable)
 
-    gKStreamsStorage = new GKStreamsStorage[TestKey, TestValue](mockStreams, kafkaProducer, storeName)
+    gKStreamsStorage = new KafkaStorage[TestKey, TestValue](mockStreams, kafkaProducer, storeName)
 
   }
 
