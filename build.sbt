@@ -2,7 +2,7 @@ organization := "org.ditank.kafka.storage"
 
 name := "kafka-storage"
 
-version := "0.0.1"
+version := "0.0.2-SNAPSHOT"
 scalaVersion := "2.12.7"
 
 resolvers += "confluent" at "http://packages.confluent.io/maven/"
