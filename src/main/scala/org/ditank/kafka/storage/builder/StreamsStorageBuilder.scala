@@ -10,7 +10,7 @@ import org.apache.kafka.streams.KafkaStreams
 import org.ditank.kafka.storage.KafkaStorage
 import org.ditank.kafka.storage.configuration.KafkaStorageConfiguration
 
-class StreamsStorageBuilder() {
+final class StreamsStorageBuilder() {
 
   def build[K <: SpecificRecord, V <: SpecificRecord](streams: KafkaStreams, kafkaConfiguration: KafkaStorageConfiguration): KafkaStorage[K, V] = {
     val kafkaProducer = new KafkaProducer[K, V](conf(kafkaConfiguration))
@@ -21,6 +21,8 @@ class StreamsStorageBuilder() {
     val config = new Properties()
     config.put(ProducerConfig.CLIENT_ID_CONFIG, s"kafka-storage-producer-${kafkaConf.storeTopic}")
     config.put(ProducerConfig.ACKS_CONFIG, "all")
+//    config.put(ProducerConfig.BATCH_SIZE_CONFIG, "0")
+//    config.put("max.in.flight.requests.per.connection", "1")
     config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaConf.bootstrapServer)
     config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, classOf[SpecificAvroSerializer[K]])
     config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, classOf[SpecificAvroSerializer[V]])

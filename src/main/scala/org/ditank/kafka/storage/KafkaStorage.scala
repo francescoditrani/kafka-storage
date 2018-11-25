@@ -18,9 +18,9 @@ import scala.concurrent.{ExecutionContext, Future}
 
 final case class KafkaStorage[K <: SpecificRecord, V <: SpecificRecord](streams: KafkaStreams,
                                                                         kafkaProducer: KafkaProducer[K, V],
-                                                                        storeName: String)  {
+                                                                        storeName: String) {
 
-  private val globalTable: ReadOnlyKeyValueStore[K, V] = streams.store(storeName,  QueryableStoreTypes.keyValueStore[K, V])
+  private val globalTable: ReadOnlyKeyValueStore[K, V] = streams.store(storeName, QueryableStoreTypes.keyValueStore[K, V])
 
   def insert(record: (K, V)): Future[RecordMetadata] = kafkaProducer.sendAsync(new ProducerRecord[K, V](storeName, record._1, record._2))
 

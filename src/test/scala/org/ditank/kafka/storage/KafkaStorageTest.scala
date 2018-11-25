@@ -1,26 +1,32 @@
 package org.ditank.kafka.storage
 
+import net.manub.embeddedkafka.schemaregistry.{EmbeddedKafkaConfigWithSchemaRegistry, EmbeddedKafkaWithSchemaRegistry}
 import org.apache.kafka.clients.producer.{Callback, KafkaProducer, ProducerRecord}
 import org.apache.kafka.streams.KafkaStreams
 import org.apache.kafka.streams.state.{QueryableStoreType, ReadOnlyKeyValueStore}
+import org.ditank.kafka.storage.configuration.KafkaStorageConfiguration
 import org.ditank.kafka.storage.test.{TestKey, TestValue}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, refEq}
 import org.mockito.Mockito.{never, verify, when}
+import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
+import org.scalatest.time.{Millis, Seconds, Span}
 import org.scalatest.{BeforeAndAfterEach, FlatSpec}
 
-import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
+import scala.concurrent.{Await, Future}
 
-class KafkaStorageTest extends FlatSpec with BeforeAndAfterEach with MockitoSugar {
+class KafkaStorageTest extends FlatSpec with BeforeAndAfterEach with MockitoSugar with ScalaFutures with EmbeddedKafkaWithSchemaRegistry {
 
   var gKStreamsStorage: KafkaStorage[TestKey, TestValue] = _
   var mockStreams: KafkaStreams = _
   var kafkaProducer: KafkaProducer[TestKey, TestValue] = _
   val storeName = "input-store-name"
   var globalTable: ReadOnlyKeyValueStore[TestKey, TestValue] = _
+
+  implicit val defaultPatience: PatienceConfig = PatienceConfig(timeout = Span(30, Seconds), interval = Span(700, Millis))
 
   val producerRecordCaptor: ArgumentCaptor[ProducerRecord[TestKey, TestValue]] = ArgumentCaptor.forClass(classOf[ProducerRecord[TestKey, TestValue]])
 
@@ -32,7 +38,7 @@ class KafkaStorageTest extends FlatSpec with BeforeAndAfterEach with MockitoSuga
       .store[ReadOnlyKeyValueStore[TestKey, TestValue]](refEq(storeName), any[QueryableStoreType[ReadOnlyKeyValueStore[TestKey, TestValue]]])
     ).thenReturn(globalTable)
 
-    gKStreamsStorage = new KafkaStorage[TestKey, TestValue](mockStreams, kafkaProducer, storeName)
+    gKStreamsStorage = KafkaStorage[TestKey, TestValue](mockStreams, kafkaProducer, storeName)
 
   }
 
@@ -82,6 +88,45 @@ class KafkaStorageTest extends FlatSpec with BeforeAndAfterEach with MockitoSuga
     verify(kafkaProducer).send(producerRecordCaptor.capture(), any[Callback])
     assert(producerRecordCaptor.getValue.key() === key)
     assert(producerRecordCaptor.getValue.value() === newValue)
+  }
+
+  "KafkaStorage" should "save and get a record" in {
+
+    implicit val config: EmbeddedKafkaConfigWithSchemaRegistry = EmbeddedKafkaConfigWithSchemaRegistry()
+
+    withRunningKafka {
+
+      val topic = "test-topic"
+      createCustomTopic(topic)
+
+      val kafkaStorage = KafkaStorage[TestKey, TestValue](KafkaStorageConfiguration(
+        "localhost:6001",
+        s"http://localhost:6002",
+        topic
+      ))
+
+      val key = TestKey("test-uuid")
+      val key2 = TestKey("test-uuid2")
+      val value = TestValue("test-name", 1)
+      val value2 = TestValue("test-name2", 1)
+
+      val result = kafkaStorage.insert((key, value))
+        .map(_ => Thread.sleep(70))
+        .map(_ => kafkaStorage.get(key))
+        .flatMap(_ => kafkaStorage
+          .insert((key2, value2))
+          .map(_ => Thread.sleep(10))
+          .map(_ => kafkaStorage.get(key2))
+        )
+
+      whenReady(result) {
+        case Some(testValue: TestValue) => assert(testValue === value2)
+        case _ => fail("No record found")
+      }
+
+    }
+
+
   }
 
 

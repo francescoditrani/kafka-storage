@@ -21,7 +21,9 @@ libraryDependencies ++= Seq(
 
   //test
   "org.scalatest" %% "scalatest" % "3.0.5" % "test",
-  "org.mockito" % "mockito-core" % "2.23.0" % "test"
+  "org.mockito" % "mockito-core" % "2.23.0" % "test",
+  "net.manub" %% "scalatest-embedded-kafka" % "2.0.0" % Test,
+  "net.manub" %% "scalatest-embedded-schema-registry" % "2.0.0" % Test
 )
 
 sourceGenerators in Test += (avroScalaGenerateSpecific in Test).taskValue
